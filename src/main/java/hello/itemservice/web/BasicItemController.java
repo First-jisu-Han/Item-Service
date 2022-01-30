@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Controller
@@ -28,4 +29,11 @@ public class BasicItemController {
         model.addAttribute("items",items);
         return "basic/items";
     }
+
+    @PostConstruct   // 해당 빈의 의존관계가 주입되고 나면 초기화 용도로 호출
+    public void init() {
+        itemRepository.save(new Item("TestA",10000,10));
+        itemRepository.save(new Item("TestB",20000,20));
+    }
+
 }
