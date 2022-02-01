@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -72,11 +73,20 @@ public class BasicItemController {
         return "basic/item";
     }
     // PRG(Post Redirect Get) 적용
-    @PostMapping("/add")
+//    @PostMapping("/add")
     public String addItemV3(@ModelAttribute("item") Item item){
         itemRepository.save(item);
         return "redirect:/basic/items/"+item.getId();
     }
+    @PostMapping("/add")
+    public String addItemV4(@ModelAttribute("item") Item item, RedirectAttributes redirectAttributes){
+        Item savedItem=itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId",savedItem.getId());    // url 리다이렉트시 사용한다.
+        redirectAttributes.addAttribute("status",true);    //  남은 status는 쿼리파라미터처럼 들어간다. ?status=true 꼴로 들어간다.
+        return "redirect:/basic/items/{itemId}";  // addAttribute한 itemId가 여기로 치환되어 들어간다.
+    }
+
+
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model){
         Item item = itemRepository.findById(itemId);
