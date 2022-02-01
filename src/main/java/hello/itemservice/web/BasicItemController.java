@@ -64,14 +64,19 @@ public class BasicItemController {
 
         return "basic/item";
     }
-    @PostMapping("/add")
+//    @PostMapping("/add")
     public String addItemV2(@ModelAttribute("item") Item item){
 
         itemRepository.save(item);   // 레포지토리에서 id가 자동으로 생성된다. ++sequence되면서
 //        model.addAttribute("item",item); // 자동 추가가 되기때문에 생략이 가능하다.
         return "basic/item";
     }
-
+    // PRG(Post Redirect Get) 적용
+    @PostMapping("/add")
+    public String addItemV3(@ModelAttribute("item") Item item){
+        itemRepository.save(item);
+        return "redirect:/basic/items/"+item.getId();
+    }
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model){
         Item item = itemRepository.findById(itemId);
@@ -83,6 +88,7 @@ public class BasicItemController {
         itemRepository.update(itemId,item);
         return "redirect:/basic/items/{itemId}";
     }
+
 
 
 
